@@ -5,6 +5,7 @@ import (
  	//"github.com/go-redis/redis"
 )
 
+
 func main(){
 	s := scraper.Scraperseev{}
     s.Scrape()
