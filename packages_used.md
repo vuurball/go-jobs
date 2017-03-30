@@ -3,3 +3,5 @@
 * using strconv to convert int to string
 * fmt
 * strings
+* github.com/go-redis/redis for redis
+* os for killing app
