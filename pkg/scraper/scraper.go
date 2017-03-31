@@ -1,6 +1,5 @@
 package scraper
 
-
 import (
 	"strings"
 	"net/http"
@@ -8,12 +7,27 @@ import (
 	"fmt"
 )
 
-// type Scraper {
-// 	Data_sources = [3]string{"seev", "drushim", "nisha"}
-// }
+type Scraper struct{}
 
+/**
+ * strategy pattern, initialize the relevant scraper 
+ * returns a specific site scraper obj and ok flag
+ */
+func GetScraperInstance(name string) (s SiteInterface, ok bool){
+	ok = false
+	switch name{
+		case "Scraperseev":
+			s = Scraperseev{}
+			ok = true
+	}
+	return
+}
+
+/**
+ * gets a string containing post html
+ * extracts all the skills in the string and connects them
+ */
 func ProcessPost(post string){
-	//fmt.Println(post)
 	fmt.Println("processed new post")
 	// Redis::incr('postsCounter');
 	skills := getAllSkillNames();
@@ -22,7 +36,6 @@ func ProcessPost(post string){
 
 	for _, skill := range skills {
 		if strings.Index(post, skill) > -1 {
-			
 			foundSkills = append(foundSkills, skill)
 		}
 	}
@@ -38,6 +51,9 @@ func ProcessPost(post string){
 	}
 }
 
+/**
+ * returns substring between two strings
+ */
 func ScrapeBetween(data string, start string, end string) string{
  	startIndex := strings.Index(data, start)
     if startIndex == -1 {
@@ -51,6 +67,9 @@ func ScrapeBetween(data string, start string, end string) string{
     return data[startIndex:endIndex]
 }
 
+/**
+ * gets a web page content
+ */
 func GetPageContent(url string) string{
 	resp, err := http.Get(url)
 	if err != nil {
