@@ -2,13 +2,22 @@ package main
 
 import (
  	"scraper"
+ 	// "fmt"
  	//"github.com/go-redis/redis"
 )
 
 
 func main(){
-	s := scraper.Scraperseev{}
-    s.Scrape()
+
+	dataSources :=[]string{"seev", "drushim", "nisha"}
+
+	for _, dataSource := range dataSources{	
+		s, ok:= scraper.GetScraperInstance("Scraper"+dataSource)
+		if ok{
+	    	s.Scrape()	
+		}
+	}
+	
 	//http.ListenAndServe(":8080", nil)    
 }
 
