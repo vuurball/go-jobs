@@ -5,3 +5,5 @@
 * strings
 * github.com/go-redis/redis for redis
 * os for killing app
+* time for checking performance
+* sync for concurrency
