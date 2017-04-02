@@ -2,7 +2,7 @@ package scraper
 
 import (
 	"fmt"
-	"os"
+//	 "os"
 	"strings"
 	"strconv"
 )
@@ -11,6 +11,9 @@ type Scraperseev struct{
 
 }
 
+/**
+* implementing the SiteInterface
+*/
 func (this Scraperseev) Scrape(){
 
 	key := "seev"
@@ -20,8 +23,10 @@ func (this Scraperseev) Scrape(){
 	url := firstUrl + strconv.Itoa(page)
 	pagePostsHtml := []string{}
 
+	redisClient := RedisConnection()
+
 	for nextPage == true {
-		//fmt.Println("SCRAPING:" ,url)
+		fmt.Println("SCRAPING:" ,url)
 		pageFullHtml := GetPageContent(url)
 
 		if strings.Index(pageFullHtml, "<div class=\"job row") > -1{
@@ -41,15 +46,17 @@ func (this Scraperseev) Scrape(){
         for _, postContentHtml := range pagePostsHtml {
         	if postKey := ""; postContentHtml != "" {
         		postKey = ScrapeBetween(postContentHtml, "data-id=\"", "\">")
-        		fmt.Println(postKey)
-        		//if Redis::sismember(key, postKey) === 0 {
+
+ 				sIsMember := redisClient.SIsMember(key, postKey)
+ 				if sIsMember.Val() == false {
         			ProcessPost(postContentHtml)
-        		//}
+        			redisClient.SAdd(key, postKey)
+        		}
         	}
-        	os.Exit(3)//stoping from looping during dev
+        //	os.Exit(3)//stoping from looping during dev
         }
-		//fmt.Println("HTML:\n\n", string(bytes))
-		nextPage = false
+		
+		//nextPage = false
 	}	
 
 	fmt.Println("finished running", url, key)
