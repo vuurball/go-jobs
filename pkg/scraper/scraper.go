@@ -1,5 +1,6 @@
 package scraper
 
+
 import (
 	"strings"
 	"net/http"
@@ -7,7 +8,9 @@ import (
 	"fmt"
 )
 
-type Scraper struct{}
+ type Scraper struct{
+// 	Data_sources = [3]string{"seev", "drushim", "nisha"}
+}
 
 /**
  * strategy pattern, initialize the relevant scraper 
@@ -28,6 +31,9 @@ func GetScraperInstance(name string) (s SiteInterface, ok bool){
  * extracts all the skills in the string and connects them
  */
 func ProcessPost(post string){
+	//fmt.Println(post)
+	redisClient := RedisConnection()
+	redisClient.Incr("postsCounter")
 	fmt.Println("processed new post")
 	// Redis::incr('postsCounter');
 	skills := getAllSkillNames();
@@ -36,6 +42,7 @@ func ProcessPost(post string){
 
 	for _, skill := range skills {
 		if strings.Index(post, skill) > -1 {
+			
 			foundSkills = append(foundSkills, skill)
 		}
 	}
