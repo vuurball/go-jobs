@@ -1,33 +1,27 @@
 package scraper
 
 import (
- 	//"scraper"
  	"fmt"
  	"github.com/go-redis/redis"
 )
 
-var ini bool
-var client *redis.Client
+var instance *redis.Client
 
 func RedisConnection() *redis.Client{
-	fmt.Println("RedisConnection called ")
 
-	if(ini == false){
-		
-		client = redis.NewClient(&redis.Options{
+	if instance == nil{
+		instance = redis.NewClient(&redis.Options{
 					Addr: "10.0.8.201:6379",
 					Password: "", // no password set
 					DB: 0,  // use default DB
 				})
-		_ , err := client.Ping().Result()
+		_ , err := instance.Ping().Result()
 		if err != nil{
 			panic(err)
 		}
-		ini = true
-		fmt.Println("RedisConnection INITIALIZED")
 	}
-
-    return client
+	return instance
+}
 	// pong, err := client.Ping().Result()
 	// fmt.Println(pong, err)
 
@@ -50,4 +44,4 @@ func RedisConnection() *redis.Client{
 	// } else {
 	// 	fmt.Println("key2", val2)
 	// }
-}
+
